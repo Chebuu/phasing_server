@@ -21,13 +21,13 @@ def apply_bfactor(topology, bfactor, output):
     # print(bfactor_text)
     with open ('%s' %topology, 'r') as fopen:
         lines = fopen.readlines()
-
+        data = []
         for line in lines:
             if line[0:6] == "ATOM  " or line[0:6] == "HETATM":
-                output.append("%s%6.2F%s" % (line[:60], bfactor, line[66:]))
+                data.append("%s%6.2F%s" % (line[:60], bfactor, line[66:]))
 
-    with open('%s' % output, 'w+') as f2:
-        for line in output:
+    with open('%s' %output, 'w') as f2:
+        for line in data:
             f2.write(line)
 
 
@@ -44,3 +44,6 @@ def main():
     bfactor = args.bfactor
     output = args.output
     apply_bfactor(topology, bfactor, output)
+
+if __name__ == '__main__':
+    main()
