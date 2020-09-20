@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# Written by Shikai Jin on 2019-Sep-25, latest modified on 2019-Sep-25
+# Apply a uniform bfactor to all residues
+
+# Example in Linux: Python calculate_protein_length,py a.pdb
+
+import numpy as np
+import sys
+import argparse
+
+
+def apply_bfactor(topology, bfactor, output):
+
+    if topology[-4:].lower() != ".pdb":
+        topology = topology + ".pdb"
+    topology_prefix = topology.split(".")[0]
+    bfactor = float(bfactor)
+    # bfactor_text = str('{:.2f}'.format(float(bfactor)))
+    # print(bfactor_text)
+    with open ('%s' %topology, 'r') as fopen:
+        lines = fopen.readlines()
+
+        for line in lines:
+            if line[0:6] == "ATOM  " or line[0:6] == "HETATM":
+                output.append("%s%6.2F%s" % (line[:60], bfactor, line[66:]))
+
+    with open('%s' % output, 'w+') as f2:
+        for line in output:
+            f2.write(line)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="This script applys an uniform B-factor value to the input structure. The script must run under Linux system and Python3.")
+    parser.add_argument("topology", help="The file name of input structure", type=str)
+    parser.add_argument("bfactor", help="The value of B-factor", type=float)
+    parser.add_argument("output", help="The output file name", type=str)
+
+
+    args = parser.parse_args()
+    topology = args.topology
+    bfactor = args.bfactor
+    output = args.output
+    apply_bfactor(topology, bfactor, output)
