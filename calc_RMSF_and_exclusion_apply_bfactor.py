@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 # Written by Shikai Jin on 2018-Oct-22, latest modified on 2019-May-11
-# Due to limitation of MDAnalysis, this python code must be run on Linux system and python3
 
 import MDAnalysis as mda
 import matplotlib
