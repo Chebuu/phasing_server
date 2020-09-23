@@ -33,7 +33,7 @@ def apply_bfactor(topology, bfactor, output):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="This script applys an uniform B-factor value to the input structure. The script must run under Linux system and Python3.")
+        description="This script applys an uniform B-factor value to the input structure. An example for this script is python apply_uniform_bfactor.py best.pdb 1.5 best_uniform.pdb")
     parser.add_argument("topology", help="The file name of input structure", type=str)
     parser.add_argument("bfactor", help="The value of B-factor", type=float)
     parser.add_argument("output", help="The output file name", type=str)
