@@ -137,7 +137,7 @@ def topology_rmsfexclusion(topology_prefix, selection_residue, allatom):
 def main():
     parser = argparse.ArgumentParser(
         description="This script calculates the RMSF value of each residue based on C_alpha atom and exclude\
-        the atoms based on specified threshold. The script must run under Linux system and Python3.")
+        the atoms based on specified threshold. An example of command is python calc_RMSF_and_exclusion_apply_bfactor.py trajectory.pdb best.pdb 1.5.")
     parser.add_argument("trajectory", help="The file name of trajectory in dcd format, usually converted from dump.lammpstrj in AWSEM", type=str)
     parser.add_argument("topology", help="The file name of topology for align, any frame of run.pdb is ok", type=str)
     parser.add_argument("threshold", help="The RMSF exclusion threshold", type=float)
