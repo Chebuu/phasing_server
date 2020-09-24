@@ -144,7 +144,7 @@ def main():
     parser.add_argument("threshold", help="The RMSF exclusion threshold", type=float)
     parser.add_argument("--allatom", help="The change in allatom mode, input allatom file should be named as ${i}_model.pdb, purged", action="store_true", default=False)
 
-    args = parser.parse_args(["trajectory_1.pdb", "best_1_1.pdb", "1.5"])
+    args = parser.parse_args()
     trajectory = args.trajectory
     topology = args.topology
     threshold = args.threshold
