@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# Written by Shikai Jin on 2018-Oct-22, latest modified on 2019-May-11
+# Written by Shikai Jin on 2018-Oct-22, latest modified on 2020-Sep-14
 
 import MDAnalysis as mda
 import matplotlib
@@ -16,6 +16,7 @@ from Bio.PDB.PDBParser import PDBParser
 import os
 import argparse
 import math
+import mdtraj as md
 
 '''
 def exclusion(exclusion):
@@ -68,13 +69,13 @@ def topology_backbone(topology_prefix):
 
 
 def RMSFcalculation(topology, trajectory, threshold):
-    u = mda.Universe("%s" % topology, "%s" % trajectory, in_memory=True)  # Initialization in MDAnalysis
+    u = mda.Universe("%s" % trajectory, in_memory=True)  # Initialization in MDAnalysis
     ref = mda.Universe("%s" % topology)  # The backbone file has 3 atoms per residue
     prealigner = align.AlignTraj(u, ref, select="protein and name CA",
                                  in_memory=True).run()  # Fit to the best frame to get a better average structure
     protein = u.select_atoms("protein")
     reference_coordinates = u.trajectory.timeseries(asel=protein).mean(axis=1)
-    print ("The atomic coordinates are\n%s" % reference_coordinates)
+    #print ("The atomic coordinates are\n%s" % reference_coordinates)
     reference = mda.Merge(protein).load_new(reference_coordinates[:, None, :], order="afc")
     aligner = align.AlignTraj(u, reference, select="protein and name CA", in_memory=True).run()
     calphas = protein.select_atoms("name CA")
@@ -139,11 +140,11 @@ def main():
         description="This script calculates the RMSF value of each residue based on C_alpha atom and exclude\
         the atoms based on specified threshold. An example of command is python calc_RMSF_and_exclusion_apply_bfactor.py trajectory.pdb best.pdb 1.5.")
     parser.add_argument("trajectory", help="The file name of trajectory in dcd format, usually converted from dump.lammpstrj in AWSEM", type=str)
-    parser.add_argument("topology", help="The file name of topology for align, any frame of run.pdb is ok", type=str)
+    parser.add_argument("topology", help="The file name of topology for align, any frame of trajectory is fine", type=str)
     parser.add_argument("threshold", help="The RMSF exclusion threshold", type=float)
     parser.add_argument("--allatom", help="The change in allatom mode, input allatom file should be named as ${i}_model.pdb, purged", action="store_true", default=False)
 
-    args = parser.parse_args()
+    args = parser.parse_args(["trajectory_1.pdb", "best_1_1.pdb", "1.5"])
     trajectory = args.trajectory
     topology = args.topology
     threshold = args.threshold
@@ -152,6 +153,15 @@ def main():
     if topology[-4:].lower() != ".pdb":
         topology = topology + ".pdb"
     topology_prefix = topology.split(".")[0]
+    
+    t = md.load('%s' %trajectory)
+    print("The number of frames in trajectory is %d. We use the later half to calculate the RMSF." %len(t))
+    middle = int(len(t) / 2)
+    print(middle)
+    t2 = t[middle:-1]
+    t2.save('temp.pdb')
+    
+    trajectory = 'temp.pdb'
 
     topology_filename = topology_backbone(topology_prefix)
     (selection_residue, rmsf_data) = RMSFcalculation(topology_filename, trajectory, threshold)
@@ -159,6 +169,7 @@ def main():
     print("The figure has been saved as %s_rmsf_per_residue.png" % topology_prefix)
     pdbBfactor(topology_prefix, rmsf_data)
     topology_rmsfexclusion(topology_prefix, selection_residue, allatom)
+    os.remove('temp.pdb')
 
 
 if __name__ == '__main__':
