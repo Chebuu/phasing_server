@@ -106,9 +106,11 @@ def pdbBfactor(topology_prefix, rmsf_data):
                 resnum = line[23:26].strip()
                 index = int(resnum) - 1
                 bfactor = (8 * pow(math.pi, 2) / 3) * pow(rmsf_data[index], 2)  # B=[(8*PI**2)/3] * (RMSF)**2
-                output.append("%s%6.2F%s" % (line[:60], bfactor, line[66:]))
+                if line[12:16].strip() != "HB":
+                    output.append("%s%6.2F%s" % (line[:60], bfactor, line[66:]))
             elif line[0:6] == "HETATM":
-                output.append("%s%6.2F%s" % (line[:60], bfactor, line[66:]))
+                if line[12:16].strip() != "HB":
+                    output.append("%s%6.2F%s" % (line[:60], bfactor, line[66:]))
             else:
                 output.append(line)
     with open('%s_rmsf_contained.pdb' % topology_prefix, 'w+') as f2:
