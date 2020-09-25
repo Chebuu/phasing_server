@@ -24,7 +24,8 @@ def apply_bfactor(topology, bfactor, output):
         data = []
         for line in lines:
             if line[0:6] == "ATOM  " or line[0:6] == "HETATM":
-                data.append("%s%6.2F%s" % (line[:60], bfactor, line[66:]))
+                if line[12:16].strip() != "HB":                
+                    data.append("%s%6.2F%s" % (line[:60], bfactor, line[66:]))
 
     with open('%s' %output, 'w') as f2:
         for line in data:
