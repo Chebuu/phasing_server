@@ -139,8 +139,8 @@ def main():
     parser = argparse.ArgumentParser(
         description="This script calculates the RMSF value of each residue based on C_alpha atom and exclude\
         the atoms based on specified threshold. An example of command is python this_script.py trajectory.pdb best.pdb 1.5.")
-    parser.add_argument("trajectory", help="The file name of trajectory in dcd format, usually converted from dump.lammpstrj in AWSEM", type=str)
-    parser.add_argument("topology", help="The file name of topology for align, any frame of trajectory is fine", type=str)
+    parser.add_argument("trajectory", help="The file name of trajectory in pdb format, usually called trajectory_1.pdb if you get from server", type=str)
+    parser.add_argument("topology", help="The file name of topology for align, any frame of trajectory is fine, usually called best_1_1.pdb", type=str)
     parser.add_argument("threshold", help="The RMSF exclusion threshold", type=float)
     parser.add_argument("--allatom", help="The change in allatom mode, input allatom file should be named as ${i}_model.pdb, purged", action="store_true", default=False)
 
